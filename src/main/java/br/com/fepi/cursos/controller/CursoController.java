@@ -1,10 +1,8 @@
 package br.com.fepi.cursos.controller;
 
 
-
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.com.fepi.cursos.model.Curso;
 import br.com.fepi.cursos.service.CursoService;
 import jakarta.validation.Valid;
@@ -41,11 +38,8 @@ public class CursoController {
     }
     
     @GetMapping("{id}")
-    public ResponseEntity<Curso> findById(@PathVariable @NotNull @Positive Long id){
-
-        return service.findById(id)
-        .map(r -> ResponseEntity.ok().body(r))
-        .orElse(ResponseEntity.notFound().build());
+    public Curso findById(@PathVariable @NotNull @Positive Long id){
+        return service.findById(id);
     }
 
     @PostMapping
@@ -56,18 +50,13 @@ public class CursoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Curso> update(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid Curso curso){
-        
-        return service.update(id, curso)
-        .map(r -> ResponseEntity.ok().body(r))
-        .orElse(ResponseEntity.notFound().build());
+    public Curso update(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid Curso curso){
+        return service.update(id, curso);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?>  delete(@PathVariable @NotNull @Positive Long id){ 
-        if(service.delete(id)){
-            return ResponseEntity.noContent().<Void>build();
-        } 
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable @NotNull @Positive Long id){ 
+       service.delete(id);
     }
 }
