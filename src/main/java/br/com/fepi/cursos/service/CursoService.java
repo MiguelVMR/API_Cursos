@@ -1,15 +1,14 @@
 package br.com.fepi.cursos.service;
 
+
 import java.util.List;
-
-
-
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import br.com.fepi.cursos.dto.CursoDTO;
+import br.com.fepi.cursos.dto.mapper.CursoMapper;
 import br.com.fepi.cursos.exception.RecordNotFoundException;
-import br.com.fepi.cursos.model.Curso;
 import br.com.fepi.cursos.repository.CursoRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,38 +19,42 @@ import jakarta.validation.constraints.Positive;
 public class CursoService {
     
     private final CursoRepository repository;
+    private final CursoMapper cursoMapper;
 
-    CursoService(CursoRepository repository) {
+    CursoService(CursoRepository repository,CursoMapper cursoMapper) {
         this.repository = repository;
+        this.cursoMapper = cursoMapper;
     }
 
 
 
-    public List<Curso> findAll(){
-
-        return repository.findAll();
+    public List<CursoDTO> findAll(){
+        return repository.findAll()
+        .stream()
+        .map(cursoMapper::toDTO)
+        .collect(Collectors.toList());
     }
 
-    public Curso findById(@PathVariable @NotNull @Positive Long id){
-
-        return repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
-    }
-
-
-    public Curso create(@Valid Curso curso){
-
-        return repository.save(curso);
+    public CursoDTO findById(@PathVariable @NotNull @Positive Long id){
+        return repository.findById(id).map(cursoMapper::toDTO)
+        .orElseThrow(() -> new RecordNotFoundException(id));
     }
 
 
+    public CursoDTO create(@Valid @NotNull CursoDTO curso){
+        return cursoMapper.toDTO(repository.save(cursoMapper.toEntity(curso)));
+    }
 
-    public Curso update(@NotNull @Positive Long id, @Valid Curso curso){
+
+
+    public CursoDTO update(@NotNull @Positive Long id, @Valid @NotNull CursoDTO cursoDTO){
         
         return repository.findById(id)
-        .map(r -> {
-            r.setNome(curso.getNome());
-            r.setCategoria(curso.getCategoria());
-            return repository.save(r);
+        .map(curso -> {
+            curso.setNome(cursoDTO.nome());
+            curso.setCategoria(cursoDTO.categoria());
+            repository.save(curso);
+            return cursoMapper.toDTO(curso);
         }).orElseThrow(() -> new RecordNotFoundException(id));
     }
 

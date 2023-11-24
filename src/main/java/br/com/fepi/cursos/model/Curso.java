@@ -2,6 +2,7 @@ package br.com.fepi.cursos.model;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,15 +25,18 @@ public class Curso {
     
     @NotBlank
     @NotNull
+    @Length(min = 5, max = 100)
     @Column(length = 100, nullable = false)
     private String nome;
     
     
     @NotNull
-    @Column(length = 30, nullable = false)
+    @Length(max = 15)
+    @Column(length = 15, nullable = false)
     private String categoria;
 
     @NotNull
+    @Length(max = 15)
     @Column(length = 15, nullable = false)
     private String status = "Ativo";
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.fepi.cursos.model.Curso;
+import br.com.fepi.cursos.dto.CursoDTO;
 import br.com.fepi.cursos.service.CursoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -32,25 +32,24 @@ public class CursoController {
 
 
     @GetMapping
-    public List<Curso> findAll(){
-
+    public List<CursoDTO> findAll(){
         return service.findAll();
     }
     
     @GetMapping("{id}")
-    public Curso findById(@PathVariable @NotNull @Positive Long id){
+    public CursoDTO findById(@PathVariable @NotNull @Positive Long id){
         return service.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Curso create(@RequestBody @Valid Curso curso){
-
+    public CursoDTO create(@RequestBody @Valid @NotNull CursoDTO curso){
         return service.create(curso);
     }
 
     @PutMapping("{id}")
-    public Curso update(@PathVariable @NotNull @Positive Long id, @RequestBody @Valid Curso curso){
+    public CursoDTO update(@PathVariable @NotNull @Positive Long id,
+     @RequestBody @Valid @NotNull CursoDTO curso){
         return service.update(id, curso);
     }
 
