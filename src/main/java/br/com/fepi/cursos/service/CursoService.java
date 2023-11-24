@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import br.com.fepi.cursos.dto.CursoDTO;
 import br.com.fepi.cursos.dto.mapper.CursoMapper;
 import br.com.fepi.cursos.exception.RecordNotFoundException;
@@ -35,7 +34,7 @@ public class CursoService {
         .collect(Collectors.toList());
     }
 
-    public CursoDTO findById(@PathVariable @NotNull @Positive Long id){
+    public CursoDTO findById(@NotNull @Positive Long id){
         return repository.findById(id).map(cursoMapper::toDTO)
         .orElseThrow(() -> new RecordNotFoundException(id));
     }
@@ -60,7 +59,7 @@ public class CursoService {
 
 
 
-    public void delete(@PathVariable @NotNull @Positive Long id){ 
+    public void delete(@NotNull @Positive Long id){ 
         repository.delete(repository.findById(id)
             .orElseThrow(() -> new RecordNotFoundException(id)));
         
