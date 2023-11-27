@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import br.com.fepi.cursos.dto.CursoDTO;
 import br.com.fepi.cursos.dto.mapper.CursoMapper;
 import br.com.fepi.cursos.exception.RecordNotFoundException;
+import br.com.fepi.cursos.model.Curso;
 import br.com.fepi.cursos.repository.CursoRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -49,10 +50,13 @@ public class CursoService {
     public CursoDTO update(@NotNull @Positive Long id, @Valid @NotNull CursoDTO cursoDTO){
         
         return repository.findById(id)
-        .map(curso -> {
-            curso.setNome(cursoDTO.nome());
-            curso.setCategoria(cursoDTO.categoria());
-            repository.save(curso);
+        .map(record -> {
+            Curso curso = cursoMapper.toEntity(cursoDTO);
+            record.setNome(cursoDTO.nome());
+            record.setCategoria(cursoDTO.categoria());
+            record.getAulas().clear();
+            curso.getAulas().forEach(aula -> record.getAulas().add(aula));
+            repository.save(record);
             return cursoMapper.toDTO(curso);
         }).orElseThrow(() -> new RecordNotFoundException(id));
     }
