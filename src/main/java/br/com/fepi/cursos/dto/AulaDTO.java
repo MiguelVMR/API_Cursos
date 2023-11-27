@@ -1,9 +1,12 @@
 package br.com.fepi.cursos.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record AulaDTO(
     Long id,
-    String nome,
-    String aulaURL
+    @NotNull @NotBlank String nome,
+    @NotNull @NotBlank String aulaURL
     ) {
 
     }

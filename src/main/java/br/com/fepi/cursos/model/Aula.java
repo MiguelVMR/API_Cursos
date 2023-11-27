@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -20,12 +22,17 @@ public class Aula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank
+    @NotNull
     @Column(length = 100, nullable = false)
     private String nome;
 
+    @NotBlank
+    @NotNull
     @Column(length = 100, nullable = false)
     private String aulaURL;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "curso_id", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

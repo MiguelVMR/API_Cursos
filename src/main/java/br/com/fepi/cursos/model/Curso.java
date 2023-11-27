@@ -16,7 +16,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 //import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -47,6 +49,9 @@ public class Curso {
     @Column(length = 15, nullable = false)
     private String status = "Ativo";
 
+    @NotNull
+    @NotEmpty
+    @Valid
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "curso")
     //@JoinColumn(name = "curso_Id")
     private List<Aula> aulas = new ArrayList<>();
