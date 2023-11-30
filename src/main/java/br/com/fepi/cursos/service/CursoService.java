@@ -3,16 +3,22 @@ package br.com.fepi.cursos.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import br.com.fepi.cursos.dto.CursoDTO;
+import br.com.fepi.cursos.dto.CursoPageDTO;
 import br.com.fepi.cursos.dto.mapper.CursoMapper;
 import br.com.fepi.cursos.exception.RecordNotFoundException;
 import br.com.fepi.cursos.model.Curso;
 import br.com.fepi.cursos.repository.CursoRepository;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Validated
 @Service
@@ -28,12 +34,18 @@ public class CursoService {
 
 
 
-    public List<CursoDTO> findAll(){
-        return repository.findAll()
-        .stream()
-        .map(cursoMapper::toDTO)
-        .collect(Collectors.toList());
+    public CursoPageDTO findAll(@PositiveOrZero int page, @Positive @Max(100) int size){
+       Page<Curso> pageCurso = repository.findAll(PageRequest.of(page, size));
+       List<CursoDTO> cursos = pageCurso.get().map(cursoMapper::toDTO).collect(Collectors.toList());
+       return new CursoPageDTO(cursos, pageCurso.getTotalElements(), pageCurso.getTotalPages());
     }
+
+    // public List<CursoDTO> findAll(){
+    //     return repository.findAll()
+    //     .stream()
+    //     .map(cursoMapper::toDTO)
+    //     .collect(Collectors.toList());
+    // }
 
     public CursoDTO findById(@NotNull @Positive Long id){
         return repository.findById(id).map(cursoMapper::toDTO)

@@ -1,7 +1,5 @@
 package br.com.fepi.cursos.controller;
 
-
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,13 +9,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.fepi.cursos.dto.CursoDTO;
+import br.com.fepi.cursos.dto.CursoPageDTO;
 import br.com.fepi.cursos.service.CursoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 
 @Validated
@@ -32,9 +34,16 @@ public class CursoController {
 
 
     @GetMapping
-    public List<CursoDTO> findAll(){
-        return service.findAll();
+    public CursoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
+     @RequestParam(defaultValue = "10") @Positive @Max(100) int size){
+        return service.findAll(page, size);
     }
+    
+
+    // @GetMapping
+    // public List<CursoDTO> findAll(){
+    //     return service.findAll();
+    // }
     
     @GetMapping("{id}")
     public CursoDTO findById(@PathVariable @NotNull @Positive Long id){
